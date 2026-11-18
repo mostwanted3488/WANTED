@@ -154,7 +154,7 @@ void WantedProcessor::processChunk (juce::AudioBuffer<float>& buffer, int start,
             }
             autoGain.push (ein / nc, eout / nc);
         }
-        const double autoTo = autoGain.update (bn, active);
+        const double autoTo = autoGain.update (bn, active, wanted::loudnessOffsetDb (stars));
 
         for (int j = 0; j < bn; ++j)
         {

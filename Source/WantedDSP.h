@@ -32,9 +32,9 @@ struct StarSettings
 
 inline StarSettings settingsForStar (int n)
 {
-    static constexpr double POT  [7] = { 0, .30, .48, .62, .75, .88, 1.0 };
-    static constexpr double BOOST[7] = { 1, 1, 1, 1, 1.2, 1.5, 2.4 };
-    static constexpr double FILT [7] = { 7200, 7200, 6200, 5200, 4400, 3900, 3600 };
+    static constexpr double POT  [7] = { 0, .58, .68, .77, .85, .93, 1.0 };
+    static constexpr double BOOST[7] = { 1, 1, 1, 1.1, 1.35, 1.8, 3.0 };
+    static constexpr double FILT [7] = { 5200, 5200, 5500, 5800, 6100, 6400, 6800 };
     static constexpr double MAKE [7] = { .62, .62, .5, .42, .38, .35, .33 };
 
     n = std::clamp (n, 0, kMaxStars);
@@ -51,6 +51,13 @@ inline StarSettings settingsForStar (int n)
     s.toneHz = FILT[k];
     s.make   = MAKE[k];
     return s;
+}
+
+// Crescendo de volume perçu après auto gain : chaque étoile ≈ +0.5 dB de plus que la précédente
+inline double loudnessOffsetDb (int n)
+{
+    static constexpr double OFF[7] = { 0, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25 };
+    return OFF[std::clamp (n, 0, kMaxStars)];
 }
 
 //==============================================================================
@@ -210,11 +217,11 @@ struct AutoGain
     void prepare (double sampleRate) { fs = sampleRate; eIn = eOut = gDb = 0; aE = 1 - std::exp (-1.0 / (0.30 * fs)); }
     inline void push (double kIn2, double kOut2) noexcept { eIn += (kIn2 - eIn) * aE; eOut += (kOut2 - eOut) * aE; }
     // appelé toutes les `n` échantillons ; renvoie le gain linéaire courant
-    double update (int n, bool active) noexcept
+    double update (int n, bool active, double offsetDb = 0) noexcept
     {
         double target = 0;
         if (active && eIn > 1e-6 && eOut > 1e-7)
-            target = std::clamp (10 * std::log10 (eIn / eOut), -30.0, 24.0);
+            target = std::clamp (10 * std::log10 (eIn / eOut) + offsetDb, -30.0, 24.0);
         if (eIn > 1e-6 || ! active)                       // gèle pendant les silences
             gDb += (target - gDb) * (1 - std::exp (-(double) n / (0.20 * fs)));
         return std::pow (10.0, gDb / 20);
