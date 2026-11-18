@@ -1,0 +1,23 @@
+WANTED — Heat Distortion (Underwater Palace)
+============================================
+
+WINDOWS
+  1. Copie le dossier WANTED.vst3 dans :
+       C:\Program Files\Common Files\VST3
+  2. Dans FL Studio : Options > Manage plugins > Find plugins.
+
+MAC
+  1. Copie WANTED.vst3 dans  : /Library/Audio/Plug-Ins/VST3
+     Copie WANTED.component dans : /Library/Audio/Plug-Ins/Components
+  2. Le plugin n'est pas notarisé par Apple : ouvre le Terminal et tape
+       sudo xattr -dr com.apple.quarantine /Library/Audio/Plug-Ins/VST3/WANTED.vst3
+       sudo xattr -dr com.apple.quarantine /Library/Audio/Plug-Ins/Components/WANTED.component
+  3. Dans FL Studio : Options > Manage plugins > Find plugins.
+
+UTILISATION
+  - Clique sur une étoile (re-clique la même pour descendre d'un cran)
+  - Glisse verticalement dans le noir, ou molette
+  - Touches 0 à 6
+  - Double-clic dans le noir = 0 étoile (son clean)
+  - Coin en bas à droite = redimensionner le bandeau
+  L'auto gain est toujours actif : le volume perçu reste le même à chaque étoile.
